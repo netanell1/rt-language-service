@@ -17,32 +17,40 @@
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onLanguage:template-rt"
+    "onLanguage:template-rt-component",
+    "onLanguage:template-rt-style"
   ],
   "contributes": {
-    "jsonValidation": [
-      {
-        "fileMatch": "rt.json",
-        "url": "./schemas/rt-schema.json"
-      }
-    ],
     "languages": [
       {
-        "id": "template-rt",
+        "id": "template-rt-component",
         "extensions": [
-          "component-rt.template",
+          "component-rt.template"
+        ],
+        "aliases": [
+          "Component RT Template"
+        ]
+      },
+      {
+        "id": "template-rt-style",
+        "extensions": [
           "style-rt.template"
         ],
         "aliases": [
-          " Template Files"
+          "Style RT Template"
         ]
       }
     ],
     "grammars": [
       {
-        "language": "template-rt",
-        "scopeName": "source.template-rt",
-        "path": "./syntaxes/template-rt.tmLanguage.json"
+        "language": "template-rt-component",
+        "scopeName": "source.template-rt-component",
+        "path": "./syntaxes/component-rt.tmLanguage.json"
+      },
+      {
+        "language": "template-rt-style",
+        "scopeName": "source.template-rt-style",
+        "path": "./syntaxes/style-rt.tmLanguage.json"
       }
     ]
   },

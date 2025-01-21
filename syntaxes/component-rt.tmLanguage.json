@@ -1,0 +1,46 @@
+{
+    "scopeName": "source.template-rt-component",
+    "patterns": [
+        {
+            "begin": "\\{\\{",
+            "end": "\\}\\}",
+            "name": "meta.template",
+            "patterns": [
+                {
+                    "match": "\\b(functionName|componentName|styleFileName)\\b",
+                    "name": "variable.name"
+                },
+                {
+                    "match": "\\b[a-zA-Z_]+\\b",
+                    "name": "invalid.illegal"
+                }
+            ]
+        },
+        {
+            "include": "source.tsx"
+        },
+        {
+            "include": "source.js"
+        },
+        {
+            "match": "(<\\w+)",
+            "name": "entity.name.tag",
+            "patterns": [
+                {
+                    "match": "(?<=<)(\\w+)",
+                    "name": "entity.name.tag.open"
+                }
+            ]
+        },
+        {
+            "match": "(</\\w+)",
+            "name": "entity.name.tag.close",
+            "patterns": [
+                {
+                    "match": "(?<=</)(\\w+)",
+                    "name": "entity.name.tag.close"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,35 @@
+{
+    "scopeName": "source.template-rt-style",
+    "patterns": [
+        {
+            "begin": "\\{\\{",
+            "end": "\\}\\}",
+            "name": "meta.template",
+            "patterns": [
+                {
+                    "match": "\\b(functionName|componentName|styleFileName)\\b",
+                    "name": "variable.name"
+                },
+                {
+                    "match": "\\b[a-zA-Z_]+\\b",
+                    "name": "invalid.illegal"
+                }
+            ]
+        },
+        {
+            "include": "source.css"
+        },
+        {
+            "match": "\\b([a-zA-Z\\-_]+)\\b(?=\\s*\\:)",
+            "name": "support.type.property-name"
+        },
+        {
+            "match": "\\b([a-zA-Z\\-_]+)\\b(?=\\s*\\()",
+            "name": "support.function"
+        },
+        {
+            "match": "\\{\\{[a-zA-Z_]+\\}\\}",
+            "name": "variable.name"
+        }
+    ]
+}

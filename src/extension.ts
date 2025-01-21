@@ -1,66 +1,69 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-	const serverModule = context.asAbsolutePath(
-		vscode.Uri.joinPath(context.extensionUri, 'dist', 'server.js').fsPath
-	);
-
-	// Register completion item provider for component-rt.template and style-rt.template
-	context.subscriptions.push(
-		vscode.languages.registerCompletionItemProvider(['template-rt'], {
+	// Register a completion item provider for component and style templates
+	const completionProvider = vscode.languages.registerCompletionItemProvider(
+		['template-rt-component', 'template-rt-style'], // target languages
+		{
 			provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-				const completionItems = [
-					new vscode.CompletionItem('functionName', vscode.CompletionItemKind.Variable),
-					new vscode.CompletionItem('componentName', vscode.CompletionItemKind.Variable),
-					new vscode.CompletionItem('styleFileName', vscode.CompletionItemKind.Variable)
-				];
-				return completionItems;
+				const line = document.lineAt(position).text;
+				const openingBrackets = line.lastIndexOf('{{', position.character);
+				const closingBrackets = line.indexOf('}}', position.character);
+
+				// Check if the cursor is between the opening {{ and closing }} brackets
+				// if (openingBrackets !== -1 && closingBrackets !== -1 && openingBrackets < position.character && closingBrackets > position.character) {
+
+				// Provide the three variable suggestions only inside {{ }}
+				const functionNameCompletion = new vscode.CompletionItem('functionName', vscode.CompletionItemKind.Variable);
+				const componentNameCompletion = new vscode.CompletionItem('componentName', vscode.CompletionItemKind.Variable);
+				const styleFileNameCompletion = new vscode.CompletionItem('styleFileName', vscode.CompletionItemKind.Variable);
+
+				return [functionNameCompletion, componentNameCompletion, styleFileNameCompletion];
+				// }
+
+				// Return no completions outside of {{ }}
+				return undefined;
 			}
-		}, '{{') // Trigger on typing {{
+		},
+		'{' // Trigger on typing {{
 	);
 
-	// Diagnostic collection for both languages
-	const diagnosticCollection = vscode.languages.createDiagnosticCollection('template-diagnostics');
+	context.subscriptions.push(completionProvider);
+
+	// Diagnostic logic remains unchanged
+	const diagnosticCollection = vscode.languages.createDiagnosticCollection('template-rt-diagnostics');
 	context.subscriptions.push(diagnosticCollection);
 
-	// Register listeners for text changes to check for errors
-	const openListener = vscode.workspace.onDidOpenTextDocument(doc => checkDiagnostics(doc, diagnosticCollection));
-	const changeListener = vscode.workspace.onDidChangeTextDocument(e => checkDiagnostics(e.document, diagnosticCollection));
-	const closeListener = vscode.workspace.onDidCloseTextDocument(doc => diagnosticCollection.delete(doc.uri));
-
-	context.subscriptions.push(openListener, changeListener, closeListener);
-
-	// Function to check and set diagnostics
-	function checkDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
-		const languageId = document.languageId;
-		if (languageId !== 'template-rt') {
-			return;
+	// Function to check diagnostics when documents are opened or edited
+	function checkDiagnostics(document: vscode.TextDocument) {
+		if (document.languageId !== 'template-rt-component' && document.languageId !== 'template-rt-style') {
+			return; // Skip if not the correct language
 		}
 
 		const diagnostics: vscode.Diagnostic[] = [];
+		const allowedVariables = ['functionName', 'componentName', 'styleFileName'];
+
+		// Regex to find everything inside {{ }}
 		const regex = /{{(.*?)}}/g;
 
-		// Iterate through each line in the document
 		for (let i = 0; i < document.lineCount; i++) {
-			const lineText = document.lineAt(i).text;
+			const line = document.lineAt(i).text;
 			let match;
 
 			// Find all {{ }} patterns in the line
-			while ((match = regex.exec(lineText)) !== null) {
-				const innerText = match[1].trim();
-				const allowedNames = ['functionName', 'componentName', 'styleFileName'];
+			while ((match = regex.exec(line)) !== null) {
+				const innerContent = match[1].trim();
 
-
-				// Validate if the text inside {{ }} is one of the allowed names
-				if (!allowedNames.includes(innerText)) {
+				// If the inner content is not one of the allowed variables, mark as an error
+				if (!allowedVariables.includes(innerContent)) {
 					const startPos = new vscode.Position(i, match.index);
 					const endPos = new vscode.Position(i, match.index + match[0].length);
 					const range = new vscode.Range(startPos, endPos);
 
-					// Create a diagnostic error if the innerText is not valid
+					// Create a diagnostic error for invalid content inside {{ }}
 					const diagnostic = new vscode.Diagnostic(
 						range,
-						`Invalid name "${innerText}" inside {{}}. Only ${allowedNames.join(', ')} are allowed.`,
+						`Invalid variable "${innerContent}" inside {{}}. Only 'functionName', 'componentName', and 'styleFileName' are allowed.`,
 						vscode.DiagnosticSeverity.Error
 					);
 					diagnostics.push(diagnostic);
@@ -68,9 +71,18 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 
-		// Set diagnostics for the document
-		collection.set(document.uri, diagnostics);
+		// Set diagnostics for the current document
+		diagnosticCollection.set(document.uri, diagnostics);
 	}
+
+	// Listen for document changes and trigger diagnostics
+	context.subscriptions.push(
+		vscode.workspace.onDidOpenTextDocument(checkDiagnostics),
+		vscode.workspace.onDidChangeTextDocument(e => checkDiagnostics(e.document)),
+		vscode.workspace.onDidCloseTextDocument(doc => diagnosticCollection.delete(doc.uri))
+	);
 }
 
-export function deactivate() { }
+export function deactivate() {
+	// Clean up resources on deactivation if necessary
+}
