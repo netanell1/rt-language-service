@@ -11,7 +11,7 @@
   - `functionName`
   - `componentName`
   - `styleFileName`
-- **Validation**: Real-time validation for your template files, highlighting any errors related to allowed variable names within double curly braces `{{ }}`.
+- **Validation**: Real-time validation for your template files, highlighting any errors related to allowed variable names within double curly braces `_{ }_`.
 - **Syntax Highlighting**: Enhanced syntax highlighting for both `component-rt.template` and `style-rt.template` files, helping to visually distinguish elements in your code.
 
 ## Installation
@@ -32,9 +32,9 @@ Once the extension is installed, you can create and edit files with the `.compon
 ### Example
 
 ```javascript
-export default function {{functionName}} ({}) {
+export default function _{functionName}_ ({ }) {
   return (
-    <p>{{componentName}} works!</p>
+    <p>_{componentName}_ works!</p>
   )
 };
 ```
