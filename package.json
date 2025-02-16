@@ -13,7 +13,7 @@
     "vscode": "^1.93.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages"
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
@@ -21,6 +21,14 @@
     "onLanguage:template-rt-style"
   ],
   "contributes": {
+    "jsonValidation": [
+      {
+        "fileMatch": [
+          "rt.json"
+        ],
+        "url": "./schemas/rt-schema.json"
+      }
+    ],
     "languages": [
       {
         "id": "template-rt-component",
