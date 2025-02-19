@@ -2,8 +2,8 @@
     "scopeName": "source.template-rt-style",
     "patterns": [
         {
-            "begin": "\\{\\{",
-            "end": "\\}\\}",
+            "begin": "_\\{",
+            "end": "\\}_",
             "name": "meta.template",
             "patterns": [
                 {

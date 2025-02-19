@@ -11,7 +11,6 @@
   - `functionName`
   - `componentName`
   - `styleFileName`
-- **Validation**: Real-time validation for your template files, highlighting any errors related to allowed variable names within double curly braces `_{ }_`.
 - **Syntax Highlighting**: Enhanced syntax highlighting for both `component-rt.template` and `style-rt.template` files, helping to visually distinguish elements in your code.
 
 ## Installation
@@ -24,17 +23,7 @@ To install the extension, follow these steps:
 
 ## Usage
 
-Once the extension is installed, you can create and edit files with the `.component-rt.template` and `.style-rt.template` extensions. The extension will automatically provide:
+Once the extension is installed, you can create and edit files with the `component-rt.template` and `style-rt.template` extensions. The extension will automatically provide:
 
 - Suggestions as you type properties defined in `rt.json`.
 - Completion for the defined variables within your templates.
-
-### Example
-
-```javascript
-export default function _{functionName}_ ({ }) {
-  return (
-    <p>_{componentName}_ works!</p>
-  )
-};
-```

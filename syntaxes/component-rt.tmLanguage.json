@@ -2,8 +2,8 @@
     "scopeName": "source.template-rt-component",
     "patterns": [
         {
-            "begin": "\\{\\{",
-            "end": "\\}\\}",
+            "begin": "_\\{",
+            "end": "\\}_",
             "name": "meta.template",
             "patterns": [
                 {
@@ -21,26 +21,10 @@
         },
         {
             "include": "source.js"
-        },
-        {
-            "match": "(<\\w+)",
-            "name": "entity.name.tag",
-            "patterns": [
-                {
-                    "match": "(?<=<)(\\w+)",
-                    "name": "entity.name.tag.open"
-                }
-            ]
-        },
-        {
-            "match": "(</\\w+)",
-            "name": "entity.name.tag.close",
-            "patterns": [
-                {
-                    "match": "(?<=</)(\\w+)",
-                    "name": "entity.name.tag.close"
-                }
-            ]
         }
-    ]
+    ],
+    "fileTypes": [
+        "component-rt.template"
+    ],
+    "firstLineMatch": "^//\\s*template-rt-component"
 }
